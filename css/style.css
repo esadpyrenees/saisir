@@ -1,0 +1,14 @@
+html, body { height: 100%; margin: 0; font-family: 'Fira Sans', sans-serif; font-size:200% }
+      nav { position: fixed; bottom: 10px; z-index: 4; text-align:center; width: 100%}
+      #wrapper { position: fixed; top:50px; right: 50px; bottom: 100px; left: 50px;}
+      button { 
+         height: 50px; width: 50px; border-radius: 50px; -webkit-appearance: none;
+         -moz-appearance:    none;
+         appearance:         none;
+         border: none
+         }
+      #transcription { 
+         position: absolute; top:0px; right: 0px; bottom: 0px; left: 0px; width: 100%; border: none;
+         text-align: center;
+         line-height: 1.2
+      }
