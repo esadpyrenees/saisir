@@ -53,23 +53,7 @@ function stopRecording(button) {
     recorder.clear();
 }
 
-function createDownloadLink() {
-    recorder && recorder.exportWAV(function(blob) {
-        var url = URL.createObjectURL(blob);
-        var li = document.createElement('li');
-        var au = document.createElement('audio');
-        var hf = document.createElement('a');
 
-        au.controls = true;
-        au.src = url;
-        hf.href = url;
-        hf.download = new Date().toISOString() + '.wav';
-        hf.innerHTML = hf.download;
-        li.appendChild(au);
-        li.appendChild(hf);
-        $('body').append(li);
-    });
-  }
 
 
 
@@ -95,7 +79,7 @@ function createAudioWav() {
         //connect source to analyser as link
         sourceNode.connect(analyser);
         //and connect source to destination
-        sourceNode.connect(audio_context.destination);
+        // sourceNode.connect(audio_context.destination);
         
         var request = new XMLHttpRequest(); 
         request.open('GET', url, true); 
@@ -174,10 +158,14 @@ function drawLetters (array) {
         }
         average = average / frequencyActiveCount;
 
+        // compute sound frenquency
+
+        
+
         // create letter
-        var $letter = $('<span>' + document.speechedtext[letterIndex] + '</span>')
+        var $letter = $('<span>' + document.speechedtext[letterIndex] + '&#8203;</span>')
         $transcription.append($letter)
-        console.log(average);
+        //console.log(average);
         var weight = Math.round(average.map( 0 , 0.5 , 1 , 9 )) * 100;
         $letter.css({
             'font-size':  40 * average / 16 + 'em',
@@ -186,6 +174,7 @@ function drawLetters (array) {
 
         letterIndex++;
         
+        $('#message-buttons').addClass('visible');
 
     };
 
