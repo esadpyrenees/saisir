@@ -12,14 +12,12 @@ if (window.SpeechRecognition !== null) {
         recognizer = new window.SpeechRecognition();
         recognition_is_initialized = true;
     }
-    else {
-        recognizer.stop();
-    }
+    
     
     // var transcription = document.getElementById('transcription');
    
    // options
-   recognizer.interimResults = true;
+   recognizer.interimResults = false;
    recognizer.continuous = false;
    
    recognizer.onresult = function(event) {

@@ -8,6 +8,7 @@
     <title>Voice to type</title>
     <link rel="stylesheet" href="css/fonts.css">
     <link rel="stylesheet" type="text/css" href="css/style.css">
+    <link rel="stylesheet" type="text/css" href="css/nanoscroller.css">
 </head>
 <body>
 
@@ -56,10 +57,10 @@
 
 
 
-        <div id="saisir" class="screen">
-            <div id="message">
+        <div id="saisir" class="screen nano">
+            <div id="message" class="nano-content">
                 <div id="transcription"></div>
-                <div id="message-buttons">
+                <div id="message-buttons" class="invisible">
                     <div id="button-send"></div>
                     <div id="button-cancel"></div>
                 </div>
@@ -94,6 +95,7 @@
 
 <script type="text/javascript" src="js/jquery.js"></script>
 <script type="text/javascript" src="js/speechtotext.js"></script>
+<script type="text/javascript" src="js/jquery.nanoscroller.min.js"></script>
 
 <!-- <script type="text/javascript" src="js/websockets.js"></script> -->
 

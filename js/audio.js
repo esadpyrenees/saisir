@@ -14,6 +14,19 @@ var chrono = 0;
 
 var $transcription = $('#transcription');
 
+var sourceNode = null;
+
+var buflen = 1024;
+var buf = new Float32Array( buflen );
+var MIN_SAMPLES = 0;  // will be initialized when AudioContext is created.
+
+var min_pitch = 0;
+var max_pitch = 0;
+
+var gradient = '';
+var old_color = '180';
+var the_end = false;
+
 Number.prototype.map = function ( in_min , in_max , out_min , out_max ) {
   return ( this - in_min ) * ( out_max - out_min ) / ( in_max - in_min ) + out_min;
 }
@@ -105,6 +118,8 @@ function createAudioWav() {
         //start loading 
         request.send(); 
 
+
+
         function updateVisualization () { 
             
             if(document.speechedtext != null){
@@ -119,17 +134,41 @@ function createAudioWav() {
                 var array = new Uint8Array(analyser.frequencyBinCount); 
                 analyser.getByteFrequencyData (array); 
 
-                drawLetters(array); 
+                // pitchdetect
+                analyser.getFloatTimeDomainData( buf );
+                var ac = autoCorrelate( buf, audio_context.sampleRate );
+
+                var pitch = 0;
+                
+                if (ac != -1) {
+                    
+                    pitch = ac;
+                    console.log('pitch = ' + Math.round( pitch ))
+                    var note =  noteFromPitch( pitch );
+                    console.log('noteString = ' +  noteStrings[note%12]);
+                    var detune = centsOffFromPitch( pitch, note );
+                    if (min_pitch == 0 || pitch < min_pitch){
+                        min_pitch = pitch
+                    }
+                    if (max_pitch == 0 || pitch > max_pitch){
+                        max_pitch = pitch
+                    }
+                    
+                }
+
+                drawLetters(array, pitch); 
 
             }
-            rafID = window.requestAnimationFrame(updateVisualization); 
+            if(!the_end){
+                rafID = window.requestAnimationFrame(updateVisualization); 
+            }
         } 
 
     });
   }
 
 
-function drawLetters (array) {
+function drawLetters (array, pitch) {
 
     var newchrono = new Date().getTime();
 
@@ -157,14 +196,35 @@ function drawLetters (array) {
             }
         }
         average = average / frequencyActiveCount;
-
-        // compute sound frenquency
-
         
-
         // create letter
         var $letter = $('<span>' + document.speechedtext[letterIndex] + '&#8203;</span>')
         $transcription.append($letter)
+
+        
+            // compute sound frenquency
+            var new_color =  Math.abs(Math.round(pitch.map(360, 2500, 0, 360)));
+
+            if(isNaN(new_color)){
+               new_color = old_color;
+            }
+
+            gradient = 'hsl(' + old_color + ', 80%, 50%), hsl(' + new_color + ', 80%, 50%)'
+            
+            var gradient_string = '-webkit-linear-gradient(left, ' + gradient + ')'
+            console.log(gradient_string)
+            $letter.css({
+                'background-image': gradient_string,
+                '-webkit-background-clip': 'text',
+                '-webkit-text-fill-color': 'transparent'
+            })
+
+            if(!isNaN(new_color)){
+                old_color = new_color;
+            } 
+        if(min_pitch != 0 && max_pitch !=0){}
+
+        
         //console.log(average);
         var weight = Math.round(average.map( 0 , 0.5 , 1 , 9 )) * 100;
         $letter.css({
@@ -174,9 +234,18 @@ function drawLetters (array) {
 
         letterIndex++;
         
-        $('#message-buttons').addClass('visible');
+        
 
-    };
+    } 
+    if (letterIndex >= document.speechedtext.length) {
+        $(".nano").nanoScroller();
+        $('#message-buttons').addClass('visible');
+        if($('#contact').text() != 'Contact') 
+            $('#message-buttons').removeClass('invisible');
+        the_end = true;
+        console.log(min_pitch, max_pitch)
+        console.log('the end')
+    }
 
 }  
 
@@ -193,10 +262,82 @@ window.onload = function init() {
         console.log('Audio context set up.');
         console.log('navigator.getUserMedia ' + (navigator.getUserMedia ? 'available.' : 'not present!'));
     } catch (e) {
-      alert('No web audio support in this browser!');
-  }
+        alert('No web audio support in this browser!');
+    }
 
-  navigator.getUserMedia({audio: true}, startUserMedia, function(e) {
-    console.log('No live audio input: ' + e);
-});
+    navigator.getUserMedia({audio: true}, startUserMedia, function(e) {
+        console.log('No live audio input: ' + e);
+    });
 };
+
+var noteStrings = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
+var colorStrings = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
+
+function noteFromPitch( frequency ) {
+    var noteNum = 12 * (Math.log( frequency / 440 )/Math.log(2) );
+    return Math.round( noteNum ) + 69;
+}
+
+function frequencyFromNoteNumber( note ) {
+    return 440 * Math.pow(2,(note-69)/12);
+}
+
+function centsOffFromPitch( frequency, note ) {
+    return Math.floor( 1200 * Math.log( frequency / frequencyFromNoteNumber( note ))/Math.log(2) );
+}
+
+        
+function autoCorrelate( buf, sampleRate ) {
+    var SIZE = buf.length;
+    var MAX_SAMPLES = Math.floor(SIZE/2);
+    var best_offset = -1;
+    var best_correlation = 0;
+    var rms = 0;
+    var foundGoodCorrelation = false;
+    var correlations = new Array(MAX_SAMPLES);
+
+    for (var i=0;i<SIZE;i++) {
+        var val = buf[i];
+        rms += val*val;
+    }
+    rms = Math.sqrt(rms/SIZE);
+    if (rms<0.01) // not enough signal
+        return -1;
+
+    var lastCorrelation=1;
+    for (var offset = MIN_SAMPLES; offset < MAX_SAMPLES; offset++) {
+        var correlation = 0;
+
+        for (var i=0; i<MAX_SAMPLES; i++) {
+            correlation += Math.abs((buf[i])-(buf[i+offset]));
+        }
+        correlation = 1 - (correlation/MAX_SAMPLES);
+        correlations[offset] = correlation; // store it, for the tweaking we need to do below.
+        if ((correlation>0.9) && (correlation > lastCorrelation)) {
+            foundGoodCorrelation = true;
+            if (correlation > best_correlation) {
+                best_correlation = correlation;
+                best_offset = offset;
+            }
+        } else if (foundGoodCorrelation) {
+            // short-circuit - we found a good correlation, then a bad one, so we'd just be seeing copies from here.
+            // Now we need to tweak the offset - by interpolating between the values to the left and right of the
+            // best offset, and shifting it a bit.  This is complex, and HACKY in this code (happy to take PRs!) -
+            // we need to do a curve fit on correlations[] around best_offset in order to better determine precise
+            // (anti-aliased) offset.
+
+            // we know best_offset >=1, 
+            // since foundGoodCorrelation cannot go to true until the second pass (offset=1), and 
+            // we can't drop into this clause until the following pass (else if).
+            var shift = (correlations[best_offset+1] - correlations[best_offset-1])/correlations[best_offset];  
+            return sampleRate/(best_offset+(8*shift));
+        }
+        lastCorrelation = correlation;
+    }
+    if (best_correlation > 0.01) {
+        // console.log("f = " + sampleRate/best_offset + "Hz (rms: " + rms + " confidence: " + best_correlation + ")")
+        return sampleRate/best_offset;
+    }
+    return -1;
+//  var best_frequency = sampleRate/best_offset;
+}
