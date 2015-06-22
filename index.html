@@ -1,36 +1,107 @@
 
 <!DOCTYPE html>
 <html>
-   <head>
-      <meta charset="UTF-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-      <meta name="author" content="">
-      <title>Voice to type</title>
-      <link rel="stylesheet" href="css/fonts.css">
-      <link rel="stylesheet" type="text/css" href="css/style.css">
-   </head>
-   <body>
-      <nav>
-         <button id="button-play-ws" class="button-demo">Start </button>
-         <button id="button-stop-ws" class="button-demo">Stop </button>
-         <!-- <button id="clear-all" class="button-demo">Clear </button>-->
-      </nav>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="author" content="">
+    <title>Voice to type</title>
+    <link rel="stylesheet" href="css/fonts.css">
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+</head>
+<body>
 
-      <div id="wrapper">
-         <div id="transcription"></div>
-      </div>
+    <div id="wrapper">
 
-      
-      <script type="text/javascript" src="js/jquery.js"></script>
-      <script type="text/javascript" src="js/speechtotext.js"></script>
+        <div id="phonenav">
+            <a href="#" id="back">back</a>
+        </div>
 
-      <!-- <script type="text/javascript" src="js/websockets.js"></script> -->
-      
-      <script type="text/javascript" src="js/audio.js"></script>
-      <script type="text/javascript" src="js/recorder.js"></script>
-      <script type="text/javascript" src="js/recorderWorker.js"></script>
+        <div id="home" class="screen">
+            <a class="toscreen" id="home-contacts" href="#contacts">
+                <span><img src="img/home-contacts.gif"></span>
+                Contacts
+            </a>
+            <a class="toscreen" id="home-saisir" href="#saisir">
+                <span><img src="img/home-saisir.gif"></span>
+                Saisir
+            </a>
+            <a class="toscreen" id="home-inbox" href="#inbox">
+                <span><img src="img/home-inbox.gif"></span>
+                Conversations
+            </a>
+            <a class="toscreen" id="home-bookmarks" href="#bookmarks">
+                <span><img src="img/home-bookmarks.gif"></span>
+                Favoris
+            </a>         
+        </div>
 
-      <script type="text/javascript" src="js/main.js"></script>
 
-   </body>
+
+        <div id="contacts" class="screen">
+            <ul>
+                <li class="sep">A</li>
+                <li><a href="#">Abigail</a></li>
+                <li><a href="#">Antoine</a></li>
+            </ul>
+            <ul>
+                <li class="sep">B</li>
+                <li><a href="#">Bérangère</a></li>
+            </ul>
+            <ul>
+                <li class="sep">C</li>
+                <li><a href="#"><span style="font-size: 0.692220052083333em; font-weight: 500;">C&#8203;</span><span style="font-size: 1.29240337171053em; font-weight: 900;">a&#8203;</span><span style="font-size: 0.861163072183099em; font-weight: 700;">m&#8203;</span><span style="font-size: 1.20849609375em; font-weight: 900;">i&#8203;</span><span style="font-size: 0.858854166666667em; font-weight: 600;">l&#8203;</span><span style="font-size: 0.773851799242424em; font-weight: 600;">l&#8203;</span><span style="font-size: 0.636393229166667em; font-weight: 500;">e&#8203;</span></a></li>
+            </ul>
+        </div>
+
+
+
+        <div id="saisir" class="screen">
+            <div id="message">
+                <div id="transcription"></div>
+                <div id="message-buttons">
+                    <div id="button-send"></div>
+                    <div id="button-cancel"></div>
+                </div>
+                <div id="contact"><a href="#contacts" class="toscreen">Contact</a></div>
+            </div>
+            
+            <nav class="bottomnav">
+                <div id="button-record" class="button visible"></div>
+                <div id="button-stop" class="button"></div>
+            </nav> 
+        </div>
+
+
+
+        <div id="inbox" class="screen">
+
+        </div>
+
+
+
+        <div id="bookmarks" class="screen">
+
+        </div>
+
+
+        <div id="error" class="screen">
+            
+        </div>
+
+    </div>
+
+
+<script type="text/javascript" src="js/jquery.js"></script>
+<script type="text/javascript" src="js/speechtotext.js"></script>
+
+<!-- <script type="text/javascript" src="js/websockets.js"></script> -->
+
+<script type="text/javascript" src="js/audio.js"></script>
+<script type="text/javascript" src="js/recorder.js"></script>
+<script type="text/javascript" src="js/recorderWorker.js"></script>
+
+<script type="text/javascript" src="js/main.js"></script>
+
+</body>
 </html>

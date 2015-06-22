@@ -1,14 +1,129 @@
-html, body { height: 100%; margin: 0; font-family: 'Fira Sans', sans-serif; font-size:200% }
-      nav { position: fixed; bottom: 10px; z-index: 4; text-align:center; width: 100%}
-      #wrapper { position: fixed; top:50px; right: 50px; bottom: 100px; left: 50px;}
-      button { 
-         height: 50px; width: 50px; border-radius: 50px; -webkit-appearance: none;
-         -moz-appearance:    none;
-         appearance:         none;
-         border: none
-         }
-      #transcription { 
-         position: absolute; top:0px; right: 0px; bottom: 0px; left: 0px; width: 100%; border: none;
-         text-align: center;
-         line-height: 1.2
-      }
+* { box-sizing:border-box;}
+
+html, body { 
+   height: 100%; margin: 20px; font-family: 'Fira Sans', sans-serif; background: #222; 
+}
+
+
+
+#wrapper { 
+   max-width: 380px;
+   margin: 0 auto;
+   min-height: 800px;
+   color: white;
+   background: #000;
+   border-radius: 10px;
+   position: relative;
+   padding: 40px 20px;
+   box-shadow: 10px;
+   -webkit-box-shadow: 0px 10px 42px 0px rgba(0,0,0,0.5);
+    -moz-box-shadow: 0px 10px 42px 0px rgba(0,0,0,0.5);
+    box-shadow: 0px 10px 42px 0px rgba(0,0,0,0.5);
+   }
+a { color: white; text-decoration: none;}
+
+#phonenav { 
+    position: absolute;
+    bottom: 0;
+    left: 10px;
+    right: 10px;
+    border-top: 1px solid #666;
+    z-index: 8000;
+    background: #000;
+    padding: 20px;
+    }
+
+#phonenav a {
+    width: 32px;
+    height: 32px;
+    background: url(../img/back.svg) no-repeat center center;
+    text-indent: 999px;
+    overflow: hidden;
+    margin: 0 auto;
+    display: block;
+    opacity: .6;
+}
+
+.screen{
+   position: absolute;
+   top: 20px; left: 0; right: 0;
+   bottom: 73px;
+   /*background: black;*/
+   display: none;
+   padding: 20px;
+   
+}
+
+/* --------------------------------------------------------------------------------- Home */
+#home { display: block; }
+
+#home a { 
+   display: block;
+   width: 50%;
+   height: 25%;
+   position: absolute;  
+   text-align: center;
+   font-weight: 100;
+   letter-spacing: 0.02em;
+   }
+   #home span { display: block; height: 70%; vertical-align: bottom; padding-bottom: 10px;}
+   #home img { max-width: 80%; max-height: 100%;  vertical-align: bottom;}
+   #home-contacts { top: 0; left:0; padding-top: 40px;}
+   #home-saisir { top: 25%; left:50%;}
+   #home-inbox { top: 50%; left:0;}
+   #home-bookmarks { top: 75%; left:50%;}
+
+
+/* --------------------------------------------------------------------------------- Saisir */
+
+#contact { text-align: center; top: 0; position: absolute; width: 100%; padding: 20px 0; left: 0;}
+
+#saisir nav { position: absolute; bottom: 0px; left: 0; z-index: 4; text-align:center; width: 100%; height: 120px;}
+#saisir.listening {
+   background: url(../img/home-saisir.gif) no-repeat center center;
+}
+.button { 
+   height: 120px; width: 120px; 
+   display: inline-block;
+   display: none;
+   cursor: pointer;
+   }
+   
+   #button-record { 
+      background: url(../img/saisir-record.gif) center center; 
+      background-size: 100%;
+      display: inline-block;
+   }
+   #button-stop {
+      background: url(../img/saisir-stop.gif) center center; 
+      background-size: 100%;
+   }
+   #button-stop.visible, .button.visible { display: inline-block; }
+
+
+#transcription { 
+   padding: 80px 0;
+   width: 100%; border: none;
+   text-align: center;
+   line-height: .7;
+   font-size: 600%;
+   }
+
+#message-buttons div {
+   height: 60px; width: 50%; 
+   display: block;
+   float: left;
+   display: none;
+   cursor: pointer;
+   }
+#message-buttons.visible div {  display: inline-block;}
+#button-send { 
+   background: url(../img/send.png) center center no-repeat; 
+   background-size: 60px;
+   margin: 0;
+   }
+#button-cancel { 
+   background: url(../img/cancel.png) center center no-repeat; 
+   background-size: 60px;
+   margin: 0;
+   }   

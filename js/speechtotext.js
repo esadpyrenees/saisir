@@ -1,4 +1,6 @@
 
+var recognition_is_initialized = false,
+    recognizer;
 
 document.speechedtext = null;
 
@@ -6,12 +8,19 @@ window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecogn
 
 if (window.SpeechRecognition !== null) {            
 
-   var recognizer = new window.SpeechRecognition();
-   var transcription = document.getElementById('transcription');
+    if(recognition_is_initialized == false) {
+        recognizer = new window.SpeechRecognition();
+        recognition_is_initialized = true;
+    }
+    else {
+        recognizer.stop();
+    }
+    
+    // var transcription = document.getElementById('transcription');
    
    // options
    recognizer.interimResults = true;
-   recognizer.continuous = true;
+   recognizer.continuous = false;
    
    recognizer.onresult = function(event) {
       
@@ -34,5 +43,12 @@ if (window.SpeechRecognition !== null) {
    // Listen for errors
    recognizer.onerror = function(event) {
       console.log ('Recognition error: ' + event.message );
+      $('.screen').hide();
+      $('#error').show();
+      $('#error').on('click', function(){
+         $('.screen').hide();
+         $('#saisir').show();
+      })
+      
    };
 }
