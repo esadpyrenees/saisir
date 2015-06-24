@@ -209,7 +209,7 @@ function drawLetters (array, pitch) {
                new_color = old_color;
             }
 
-            gradient = 'hsl(' + old_color + ', 80%, 50%), hsl(' + new_color + ', 80%, 50%)'
+            gradient = 'hsl(' + old_color + ', 70%, 50%), hsl(' + new_color + ', 70%, 50%)'
             
             var gradient_string = '-webkit-linear-gradient(left, ' + gradient + ')'
             console.log(gradient_string)
